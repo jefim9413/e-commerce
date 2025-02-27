@@ -14,6 +14,7 @@
     "test:e2e:watch": "vitest run --config ./vitest.config.e2e.mjs --watch",
     "test:coverage": "vitest --coverage",
     "test:ui": "vitest --ui",
+    "test:ui:e2e": "vitest --ui --config ./vitest.config.e2e.mjs",
     "lint": "eslint 'src/**/*.ts'",
     "lint:fix": "eslint . --ext .ts --fix"
   },
@@ -36,6 +37,7 @@
     "@types/jsonwebtoken": "9.0.9",
     "@types/node": "22.13.5",
     "@types/supertest": "6.0.2",
+    "@vitest/ui": "3.0.7",
     "eslint": "8.52.0",
     "prisma": "6.4.1",
     "supertest": "7.0.0",
