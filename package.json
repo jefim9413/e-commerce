@@ -3,14 +3,15 @@
   "version": "1.0.0",
   "description": "e-commerce api",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start:dev": "tsx watch src/server.ts",
     "start": "node build/server.js",
     "build": "tsup src --out-dir build",
-    "test": "vitest run",
+    "test": "vitest",
     "test:watch": "vitest --watch",
-    "test:e2e": "vitest run --dir tests/e2e --config vitest.config.ts",
-    "test:e2e:watch": "vitest --dir tests/e2e --config vitest.config.ts --watch",
+    "test:e2e": "vitest run --config ./vitest.config.e2e.mjs",
+    "test:e2e:watch": "vitest run --config ./vitest.config.e2e.mjs --watch",
     "test:coverage": "vitest --coverage",
     "test:ui": "vitest --ui",
     "lint": "eslint 'src/**/*.ts'",
@@ -26,6 +27,7 @@
     "bcryptjs": "3.0.2",
     "dotenv": "16.4.7",
     "fastify": "5.2.1",
+    "vite-tsconfig-paths": "5.1.4",
     "zod": "3.24.2"
   },
   "devDependencies": {
@@ -34,12 +36,13 @@
     "@types/jsonwebtoken": "9.0.9",
     "@types/node": "22.13.5",
     "@types/supertest": "6.0.2",
+    "eslint": "8.52.0",
     "prisma": "6.4.1",
     "supertest": "7.0.0",
-    "eslint": "8.52.0",
     "tsup": "8.3.6",
     "tsx": "4.19.3",
     "typescript": "5.7.3",
+    "unplugin-swc": "1.5.1",
     "vitest": "3.0.7"
   }
 }
