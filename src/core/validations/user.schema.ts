@@ -6,10 +6,10 @@ export const createUserSchema = z.object({
   password: z.string().min(6, 'Senha deve ter pelo menos 6 caracteres'),
 })
 
-export const loginUserSchema = z.object({
+export const sessionsSchema = z.object({
   email: z.string().email('Email inválido'),
   password: z.string().min(6, 'Senha deve ter pelo menos 6 caracteres'),
 })
 
 export type CreateUserDTO = z.infer<typeof createUserSchema>
-export type LoginUserDTO = z.infer<typeof loginUserSchema>
+export type SessionsDTO = z.infer<typeof sessionsSchema>
