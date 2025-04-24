@@ -22,8 +22,6 @@ const databaseUrl = generateUniqueDatabaseURL(schemaId)
 process.env.DATABASE_URL = databaseUrl
 
 beforeAll(async () => {
-  console.log(`🛠️ Criando schema de testes: ${schemaId}`)
-
   try {
     if (os.platform() === 'win32') {
       execSync(`set DATABASE_URL=${databaseUrl} && npx prisma migrate deploy`, {
@@ -45,8 +43,6 @@ beforeAll(async () => {
 })
 
 afterAll(async () => {
-  console.log(`🗑️  Removendo schema de testes: ${schemaId}`)
-
   try {
     if (prisma) {
       await prisma.$executeRawUnsafe(
