@@ -7,5 +7,5 @@ export async function usersRoutes(app: FastifyInstance) {
   app.post('/users', createUser)
   app.post('/sessions', authenticate)
 
-  app.patch('token/refresh', refresh)
+  app.patch('/token/refresh', refresh)
 }
