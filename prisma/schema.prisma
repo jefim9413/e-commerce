@@ -19,4 +19,18 @@ model User {
   role      Role     @default(MEMBER)
   password  String
   createdAt DateTime @default(now())
+
+  @@map("user")
+}
+
+model Product {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  price       Decimal  @db.Decimal(10, 2)
+  stock       Int
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+
+  @@map("product")
 }
