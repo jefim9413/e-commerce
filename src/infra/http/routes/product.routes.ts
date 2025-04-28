@@ -2,8 +2,11 @@ import { FastifyInstance } from 'fastify'
 import { verifyJwt } from '../middlewares/verify-jwt'
 import { verifyUserRole } from '../middlewares/verify-user-role'
 import { createProduct } from '../controllers/create-product'
+import { listProducts } from '../controllers/list-products'
 
 export async function productRoutes(app: FastifyInstance) {
+  app.get('/products', listProducts)
+
   app.register(async (privateRoutes) => {
     privateRoutes.addHook('onRequest', verifyJwt)
     privateRoutes.addHook('onRequest', verifyUserRole('ADMIN'))
