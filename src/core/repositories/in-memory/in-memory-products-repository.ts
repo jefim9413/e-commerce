@@ -23,4 +23,12 @@ export class InMemoryProductsRepository implements ProductsRepository {
   async findAll(): Promise<Product[]> {
     return this.items
   }
+
+  async remove(id: string): Promise<void> {
+    const productIndex = this.items.findIndex((item) => item.id === id)
+
+    if (productIndex >= 0) {
+      this.items.splice(productIndex, 1)
+    }
+  }
 }
