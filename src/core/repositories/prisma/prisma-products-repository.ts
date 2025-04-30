@@ -23,4 +23,12 @@ export class PrismaProductsRepository implements ProductsRepository {
     const products = await prisma.product.findMany()
     return products
   }
+
+  async remove(id: string): Promise<void> {
+    await prisma.product.delete({
+      where: {
+        id,
+      },
+    })
+  }
 }
