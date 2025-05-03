@@ -31,4 +31,17 @@ export class InMemoryProductsRepository implements ProductsRepository {
       this.items.splice(productIndex, 1)
     }
   }
+
+  async update(id: string, data: Partial<Product>): Promise<Product> {
+    const productIndex = this.items.findIndex((item) => item.id === id)
+
+    if (productIndex < 0) {
+      throw new Error('Product not found')
+    }
+
+    const updatedProduct = { ...this.items[productIndex], ...data }
+    this.items[productIndex] = updatedProduct
+
+    return updatedProduct
+  }
 }
