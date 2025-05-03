@@ -14,5 +14,4 @@ export interface ProductsRepository {
   list(params: ListProductsParams): Promise<Product[]>
   remove(id: string): Promise<void>
   update(id: string, data: Prisma.ProductUpdateInput): Promise<Product>
-
 }

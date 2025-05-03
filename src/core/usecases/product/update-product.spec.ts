@@ -29,7 +29,7 @@ describe('Update Product Use Case', () => {
     })
 
     expect(product.name).toBe('Produto Novo')
-    expect(product.price).toBe(new Decimal(199.99).toNumber())
+    expect(product.price.toNumber()).toBe(199.99)
     expect(product.description).toBe('Descrição antiga')
   })
 

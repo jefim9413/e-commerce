@@ -42,7 +42,8 @@ export class PrismaProductsRepository implements ProductsRepository {
       skip: (page - 1) * limit,
       orderBy: { createdAt: 'desc' },
     })
-    
+  }
+
   async remove(id: string): Promise<void> {
     await prisma.product.delete({
       where: {
