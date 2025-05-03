@@ -5,6 +5,7 @@ import { createProduct } from '../controllers/create-product'
 import { listProducts } from '../controllers/list-products'
 import { removeProduct } from '../controllers/remove-product'
 import { getProduct } from '../controllers/get-product'
+import { updateProduct } from '../controllers/update-product'
 
 export async function productRoutes(app: FastifyInstance) {
   app.get('/products', listProducts)
@@ -16,5 +17,6 @@ export async function productRoutes(app: FastifyInstance) {
 
     privateRoutes.post('/products', createProduct)
     privateRoutes.delete('/products/:id', removeProduct)
+    privateRoutes.put('/products/:id', updateProduct)
   })
 }
