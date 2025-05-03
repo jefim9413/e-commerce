@@ -19,11 +19,6 @@ export class PrismaProductsRepository implements ProductsRepository {
     return product
   }
 
-  async findAll(): Promise<Product[]> {
-    const products = await prisma.product.findMany()
-    return products
-  }
-
   async list({
     search,
     minPrice,
@@ -47,5 +42,22 @@ export class PrismaProductsRepository implements ProductsRepository {
       skip: (page - 1) * limit,
       orderBy: { createdAt: 'desc' },
     })
+    
+  async remove(id: string): Promise<void> {
+    await prisma.product.delete({
+      where: {
+        id,
+      },
+    })
+  }
+
+  async update(id: string, data: Prisma.ProductUpdateInput): Promise<Product> {
+    const product = await prisma.product.update({
+      where: {
+        id,
+      },
+      data,
+    })
+    return product
   }
 }
