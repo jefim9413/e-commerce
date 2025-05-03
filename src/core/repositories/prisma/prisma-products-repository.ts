@@ -1,5 +1,5 @@
 import { Prisma, Product } from '@prisma/client'
-import { ProductsRepository } from '../products-repository'
+import { ListProductsParams, ProductsRepository } from '../products-repository'
 import { prisma } from '@/config/prisma/database'
 
 export class PrismaProductsRepository implements ProductsRepository {
@@ -22,5 +22,30 @@ export class PrismaProductsRepository implements ProductsRepository {
   async findAll(): Promise<Product[]> {
     const products = await prisma.product.findMany()
     return products
+  }
+
+  async list({
+    search,
+    minPrice,
+    maxPrice,
+    page = 1,
+    limit = 10,
+  }: ListProductsParams): Promise<Product[]> {
+    const whereClause: Prisma.ProductWhereInput = {
+      name: search ? { contains: search, mode: 'insensitive' } : undefined,
+    }
+
+    if (minPrice !== undefined || maxPrice !== undefined) {
+      whereClause.price = {}
+      if (minPrice !== undefined) whereClause.price.gte = minPrice
+      if (maxPrice !== undefined) whereClause.price.lte = maxPrice
+    }
+
+    return await prisma.product.findMany({
+      where: whereClause,
+      take: limit,
+      skip: (page - 1) * limit,
+      orderBy: { createdAt: 'desc' },
+    })
   }
 }
