@@ -11,8 +11,9 @@ describe('Profile (e2e)', () => {
     await app.close()
   })
 
-  it('should be able to get user profile', async () => {
+  it('should be able to get user profile with token', async () => {
     const { token } = await createAndAuthenticateUser(app)
+
     const profileResponse = await request(app.server)
       .get('/me')
       .set('Authorization', `Bearer ${token}`)
@@ -22,6 +23,17 @@ describe('Profile (e2e)', () => {
     expect(profileResponse.body.user).toEqual(
       expect.objectContaining({
         email: 'johndoe@example.com',
+      }),
+    )
+  })
+
+  it('should not allow access without token', async () => {
+    const response = await request(app.server).get('/me').send()
+
+    expect(response.statusCode).toBe(401)
+    expect(response.body).toEqual(
+      expect.objectContaining({
+        message: expect.any(String),
       }),
     )
   })
