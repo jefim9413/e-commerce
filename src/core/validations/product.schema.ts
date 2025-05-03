@@ -10,4 +10,14 @@ export const createProductSchema = z.object({
   imageUrl: z.string().url('URL inválida').optional(),
 })
 
+export const updateProductSchema = z.object({
+  name: z.string().min(3).optional(),
+  description: z.string().min(10).optional(),
+  price: z.number().positive().optional(),
+  stock: z.number().int().nonnegative().optional(),
+  imageUrl: z.string().url().nullable().optional(),
+})
+
+export type UpdateProductDTO = z.infer<typeof updateProductSchema>
+
 export type CreateProductDTO = z.infer<typeof createProductSchema>
