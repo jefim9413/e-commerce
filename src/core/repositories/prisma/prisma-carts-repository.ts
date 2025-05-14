@@ -3,18 +3,6 @@ import { CartRepository, CreateCartDTO } from '../cart-repository'
 import { Cart } from '@prisma/client'
 
 export class PrismaCartsRepository implements CartRepository {
-  async create(data: CreateCartDTO): Promise<Cart> {
-    const cart = await prisma.cart.create({
-      data: {
-        userId: data.userId,
-        productId: data.productId,
-        quantity: data.quantity,
-      },
-    })
-
-    return cart
-  }
-
   async findByUserAndProduct(
     userId: string,
     productId: string,
@@ -27,6 +15,28 @@ export class PrismaCartsRepository implements CartRepository {
     })
 
     return cart
+  }
+
+  async create(data: CreateCartDTO): Promise<Cart> {
+    const cart = await prisma.cart.create({
+      data: {
+        userId: data.userId,
+        productId: data.productId,
+        quantity: data.quantity,
+      },
+    })
+
+    return cart
+  }
+
+  async findManyByUser(userId: string): Promise<Cart[]> {
+    const carts = await prisma.cart.findMany({
+      where: {
+        userId,
+      },
+    })
+
+    return carts
   }
 
   async save(cart: Cart): Promise<void> {
