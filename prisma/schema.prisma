@@ -19,6 +19,7 @@ model User {
   role      Role     @default(MEMBER)
   password  String
   createdAt DateTime @default(now())
+  Cart      Cart[]
 
   @@map("user")
 }
@@ -31,6 +32,21 @@ model Product {
   stock       Int
   imageUrl    String?
   createdAt   DateTime @default(now())
+  Cart        Cart[]
 
   @@map("product")
+}
+
+model Cart {
+  id        String   @id @default(uuid())
+  userId    String
+  productId String
+  quantity  Int
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+
+  @@unique([userId, productId])
+  @@map("cart")
 }
