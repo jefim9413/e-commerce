@@ -75,7 +75,6 @@ describe('Remove Cart Item (e2e)', () => {
 
     const productId = productResponse.body.product.id
 
-    // Usuário A adiciona ao carrinho
     await request(app.server)
       .post('/cart')
       .set('Authorization', `Bearer ${userA.token}`)
@@ -84,7 +83,6 @@ describe('Remove Cart Item (e2e)', () => {
         quantity: 1,
       })
 
-    // Usuário B tenta remover o item
     const removeResponse = await request(app.server)
       .delete(`/cart/${productId}`)
       .set('Authorization', `Bearer ${userB.token}`)
@@ -92,7 +90,6 @@ describe('Remove Cart Item (e2e)', () => {
 
     expect(removeResponse.statusCode).toBe(404)
 
-    // Verifica se o item continua no carrinho do usuário A
     const listResponse = await request(app.server)
       .get('/cart')
       .set('Authorization', `Bearer ${userA.token}`)
