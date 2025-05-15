@@ -7,6 +7,9 @@ import { randomUUID } from 'crypto'
 
 export class InMemoryCartRepository implements CartRepository {
   public items: Cart[] = []
+  async remove(cartItemId: string): Promise<void> {
+    this.items = this.items.filter((item) => item.id !== cartItemId)
+  }
 
   async findManyByUser(userId: string): Promise<Cart[]> {
     return this.items.filter((item) => item.userId === userId)
