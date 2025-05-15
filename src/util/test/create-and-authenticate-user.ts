@@ -6,18 +6,19 @@ import request from 'supertest'
 export async function createAndAuthenticateUser(
   app: FastifyInstance,
   isAdmin = false,
+  email?: string,
 ) {
-  const email = 'johndoe@example.com'
+  const finalEmail = email ?? 'johndoe@example.com'
 
   const user = await prisma.user.findUnique({
-    where: { email },
+    where: { email: finalEmail },
   })
 
   if (!user) {
     await prisma.user.create({
       data: {
         name: 'John Doe',
-        email,
+        email: finalEmail,
         password: await hash('123456', 6),
         role: isAdmin ? 'ADMIN' : 'MEMBER',
       },
@@ -25,7 +26,7 @@ export async function createAndAuthenticateUser(
   }
 
   const authResponse = await request(app.server).post('/sessions').send({
-    email,
+    email: finalEmail,
     password: '123456',
   })
 
