@@ -7,6 +7,11 @@ import { randomUUID } from 'crypto'
 
 export class InMemoryCartRepository implements CartRepository {
   public items: Cart[] = []
+
+  async clear(userId: string): Promise<void> {
+    this.items = this.items.filter((item) => item.userId !== userId)
+  }
+
   async remove(cartItemId: string): Promise<void> {
     this.items = this.items.filter((item) => item.id !== cartItemId)
   }

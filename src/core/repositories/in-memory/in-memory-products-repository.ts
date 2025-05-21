@@ -9,6 +9,13 @@ import { randomUUID } from 'crypto'
 export class InMemoryProductsRepository implements ProductsRepository {
   public items: Product[] = []
 
+  async save(product: Product): Promise<void> {
+    const index = this.items.findIndex((p) => p.id === product.id)
+    if (index !== -1) {
+      this.items[index] = product
+    }
+  }
+
   async create(data: Omit<Product, 'id' | 'createdAt'>): Promise<Product> {
     const product: Product = {
       id: randomUUID(),
