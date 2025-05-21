@@ -3,6 +3,19 @@ import { ListProductsParams, ProductsRepository } from '../products-repository'
 import { prisma } from '@/config/prisma/database'
 
 export class PrismaProductsRepository implements ProductsRepository {
+  async save(product: Product): Promise<void> {
+    await prisma.product.update({
+      where: { id: product.id },
+      data: {
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        stock: product.stock,
+        imageUrl: product.imageUrl,
+      },
+    })
+  }
+
   async create(data: Prisma.ProductCreateInput): Promise<Product> {
     const product = await prisma.product.create({
       data,

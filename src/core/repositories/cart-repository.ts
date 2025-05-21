@@ -12,4 +12,5 @@ export interface CartRepository {
   save(cart: Cart): Promise<void>
   findManyByUser(userId: string): Promise<Cart[]>
   remove(cartItemId: string): Promise<void>
+  clear(userId: string): Promise<void>
 }

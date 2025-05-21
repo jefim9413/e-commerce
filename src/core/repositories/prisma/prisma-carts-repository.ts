@@ -3,6 +3,14 @@ import { CartRepository, CreateCartDTO } from '../cart-repository'
 import { Cart } from '@prisma/client'
 
 export class PrismaCartsRepository implements CartRepository {
+  async clear(userId: string): Promise<void> {
+    await prisma.cart.deleteMany({
+      where: {
+        userId,
+      },
+    })
+  }
+
   async remove(cartItemId: string): Promise<void> {
     await prisma.cart.delete({
       where: {
@@ -39,8 +47,9 @@ export class PrismaCartsRepository implements CartRepository {
 
   async findManyByUser(userId: string): Promise<Cart[]> {
     const carts = await prisma.cart.findMany({
-      where: {
-        userId,
+      where: { userId },
+      include: {
+        product: true,
       },
     })
 
