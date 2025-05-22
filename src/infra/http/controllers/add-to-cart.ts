@@ -1,5 +1,5 @@
 import { ProductsAlreadyExistsError } from '@/core/usecases/errors/products-already-exists-error'
-import { AddToCartBodyDTO } from '@/core/validations/cart.schama'
+import { AddToCartBodyDTO } from '@/core/validations/cart.schema'
 import { makeAddToCart } from '@/infra/factories/make-add-to-cart'
 import { FastifyReply, FastifyRequest } from 'fastify'
 
