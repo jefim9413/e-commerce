@@ -26,4 +26,12 @@ export class InMemoryOrderRepository implements OrderRepository {
   async findByUserId(userId: string): Promise<Order[]> {
     return this.orders.filter((order) => order.userId === userId)
   }
+
+  async listByUser(userId: string): Promise<Order[]> {
+    return this.orders.filter((order) => order.userId === userId)
+  }
+
+  async listAll(): Promise<Order[]> {
+    return this.orders
+  }
 }
