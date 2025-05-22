@@ -15,4 +15,6 @@ export interface CreateOrderDTO {
 
 export interface OrderRepository {
   create(data: CreateOrderDTO): Promise<Order>
+  listByUser(userId: string): Promise<Order[]>
+  listAll(): Promise<Order[]>
 }
