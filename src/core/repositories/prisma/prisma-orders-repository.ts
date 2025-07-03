@@ -3,10 +3,26 @@ import {
   OrderRepository,
   CreateOrderDTO,
 } from '@/core/repositories/order-repository'
-import { Order } from '@prisma/client'
+import { Order, OrderItem } from '@prisma/client'
+
+export type OrderWithItems = Order & {
+  items: OrderItem[]
+}
 
 export class PrismaOrdersRepository implements OrderRepository {
-  async listByUser(userId: string): Promise<Order[]> {
+  async findById(id: string): Promise<OrderWithItems | null> {
+    const order = await prisma.order.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        items: true,
+      },
+    })
+    return order as OrderWithItems | null
+  }
+
+  async listByUser(userId: string): Promise<OrderWithItems[]> {
     const orders = await prisma.order.findMany({
       where: {
         userId,
@@ -19,7 +35,7 @@ export class PrismaOrdersRepository implements OrderRepository {
     return orders
   }
 
-  async listAll(): Promise<Order[]> {
+  async listAll(): Promise<OrderWithItems[]> {
     const orders = await prisma.order.findMany({
       include: {
         items: true,
