@@ -20,7 +20,7 @@ describe('ListUserOrdersUseCase', () => {
         {
           productId: 'prod-1',
           quantity: 2,
-          price: 50,
+          price: new Decimal(50),
         },
       ],
     })
@@ -32,7 +32,7 @@ describe('ListUserOrdersUseCase', () => {
         {
           productId: 'prod-2',
           quantity: 1,
-          price: 200,
+          price: new Decimal(200),
         },
       ],
     })
@@ -44,7 +44,7 @@ describe('ListUserOrdersUseCase', () => {
         {
           productId: 'prod-3',
           quantity: 3,
-          price: 50,
+          price: new Decimal(50),
         },
       ],
     })
@@ -63,7 +63,7 @@ describe('ListUserOrdersUseCase', () => {
         {
           productId: 'prod-1',
           quantity: 2,
-          price: 50,
+          price: new Decimal(50),
         },
       ],
     })
@@ -75,7 +75,7 @@ describe('ListUserOrdersUseCase', () => {
         {
           productId: 'prod-2',
           quantity: 1,
-          price: 200,
+          price: new Decimal(200),
         },
       ],
     })
