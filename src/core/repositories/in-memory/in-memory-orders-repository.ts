@@ -1,5 +1,9 @@
 import { randomUUID } from 'crypto'
-import { OrderRepository, CreateOrderDTO } from '../order-repository'
+import {
+  OrderRepository,
+  CreateOrderDTO,
+  OrderWithItems,
+} from '../order-repository'
 import { Decimal } from '@prisma/client/runtime/library'
 
 interface Order extends CreateOrderDTO {
@@ -8,10 +12,17 @@ interface Order extends CreateOrderDTO {
 }
 
 export class InMemoryOrderRepository implements OrderRepository {
-  public orders: Order[] = []
+  public orders: OrderWithItems[] = []
+  async findById(id: string): Promise<OrderWithItems | null> {
+    const order = this.orders.find((order) => order.id === id)
+    if (!order) {
+      return null
+    }
+    return order
+  }
 
-  async create(data: CreateOrderDTO): Promise<Order> {
-    const order: Order = {
+  async create(data: CreateOrderDTO): Promise<OrderWithItems> {
+    const order: OrderWithItems = {
       id: randomUUID(),
       userId: data.userId,
       total: new Decimal(data.total),
