@@ -1,4 +1,4 @@
-import { Order } from '@prisma/client'
+import { Order, OrderStatus } from '@prisma/client'
 import { Decimal } from '@prisma/client/runtime/library'
 
 export interface CreateOrderItemDTO {
@@ -21,4 +21,5 @@ export interface OrderRepository {
   listByUser(userId: string): Promise<OrderWithItems[]>
   listAll(): Promise<OrderWithItems[]>
   findById(id: string): Promise<OrderWithItems | null>
+  updateStatus(orderId: string, status: OrderStatus): Promise<void>
 }

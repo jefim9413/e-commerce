@@ -3,7 +3,7 @@ import {
   OrderRepository,
   CreateOrderDTO,
 } from '@/core/repositories/order-repository'
-import { Order, OrderItem } from '@prisma/client'
+import { Order, OrderItem, OrderStatus } from '@prisma/client'
 
 export type OrderWithItems = Order & {
   items: OrderItem[]
@@ -65,5 +65,12 @@ export class PrismaOrdersRepository implements OrderRepository {
       },
     })
     return order
+  }
+
+  async updateStatus(orderId: string, status: OrderStatus): Promise<void> {
+    await prisma.order.update({
+      where: { id: orderId },
+      data: { status },
+    })
   }
 }
