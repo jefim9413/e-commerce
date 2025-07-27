@@ -5,11 +5,7 @@ import {
   OrderWithItems,
 } from '../order-repository'
 import { Decimal } from '@prisma/client/runtime/library'
-
-interface Order extends CreateOrderDTO {
-  id: string
-  createdAt: Date
-}
+import { OrderStatus } from '@prisma/client'
 
 export class InMemoryOrderRepository implements OrderRepository {
   public orders: OrderWithItems[] = []
@@ -28,21 +24,27 @@ export class InMemoryOrderRepository implements OrderRepository {
       total: new Decimal(data.total),
       items: data.items,
       createdAt: new Date(),
+      status: OrderStatus.PENDING,
     }
 
     this.orders.push(order)
     return order
   }
 
-  async findByUserId(userId: string): Promise<Order[]> {
+  async findByUserId(userId: string): Promise<OrderWithItems[]> {
     return this.orders.filter((order) => order.userId === userId)
   }
 
-  async listByUser(userId: string): Promise<Order[]> {
+  async listByUser(userId: string): Promise<OrderWithItems[]> {
     return this.orders.filter((order) => order.userId === userId)
   }
 
-  async listAll(): Promise<Order[]> {
+  async listAll(): Promise<OrderWithItems[]> {
     return this.orders
+  }
+
+  async updateStatus(orderId: string, status: OrderStatus): Promise<void> {
+    const order = this.orders.find((order) => order.id === orderId)
+    if (order) order.status = status
   }
 }
