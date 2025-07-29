@@ -13,14 +13,15 @@ enum Role {
 }
 
 model User {
-  id        String   @id @default(uuid())
+  id        String    @id @default(uuid())
   name      String
-  email     String   @unique
-  role      Role     @default(MEMBER)
+  email     String    @unique
+  role      Role      @default(MEMBER)
   password  String
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
   Cart      Cart[]
   Order     Order[]
+  Address   Address[]
 
   @@map("user")
 }
@@ -53,6 +54,23 @@ model Cart {
   @@map("cart")
 }
 
+model Address {
+  id         String   @id @default(uuid())
+  userId     String
+  street     String
+  number     String
+  city       String
+  state      String
+  zipcode    String
+  complement String?
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
+
+  orders Order[]
+
+  @@map("address")
+}
+
 enum OrderStatus {
   PENDING
   PROCESSING
@@ -67,8 +85,10 @@ model Order {
   status    OrderStatus @default(PENDING)
   createdAt DateTime    @default(now())
 
-  user  User        @relation(fields: [userId], references: [id])
-  items OrderItem[]
+  user      User        @relation(fields: [userId], references: [id])
+  items     OrderItem[]
+  Address   Address?    @relation(fields: [addressId], references: [id])
+  addressId String?
 
   @@map("orders")
 }
