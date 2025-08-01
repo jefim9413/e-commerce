@@ -18,6 +18,20 @@ async function createProduct(adminToken: string) {
     })
   return response.body.product.id
 }
+async function createAddress(userToken: string) {
+  const response = await request(app.server)
+    .post('/addresses')
+    .set('Authorization', `Bearer ${userToken}`)
+    .send({
+      street: 'Rua dos Testes',
+      number: '123',
+      city: 'Cidade Teste',
+      state: 'SP',
+      zipcode: '12345678',
+      complement: 'Apto 1',
+    })
+  return response.body.address.id
+}
 
 describe('Update Order Status (e2e)', () => {
   beforeAll(async () => {
@@ -28,6 +42,7 @@ describe('Update Order Status (e2e)', () => {
     await prisma.orderItem.deleteMany()
     await prisma.order.deleteMany()
     await prisma.cart.deleteMany?.()
+    await prisma.address.deleteMany()
     await prisma.user.deleteMany()
   })
 
@@ -48,6 +63,8 @@ describe('Update Order Status (e2e)', () => {
     )
     const productId = await createProduct(admin.token)
 
+    const addressId = await createAddress(user.token)
+
     await request(app.server)
       .post('/cart')
       .set('Authorization', `Bearer ${user.token}`)
@@ -56,6 +73,7 @@ describe('Update Order Status (e2e)', () => {
     const checkoutResponse = await request(app.server)
       .post('/checkout')
       .set('Authorization', `Bearer ${user.token}`)
+      .send({ addressId })
 
     const orderId = checkoutResponse.body.order.id
 
@@ -102,6 +120,7 @@ describe('Update Order Status (e2e)', () => {
     )
     const productId = await createProduct(admin.token)
 
+    const addressId = await createAddress(user.token)
     await request(app.server)
       .post('/cart')
       .set('Authorization', `Bearer ${user.token}`)
@@ -110,6 +129,7 @@ describe('Update Order Status (e2e)', () => {
     const checkoutResponse = await request(app.server)
       .post('/checkout')
       .set('Authorization', `Bearer ${user.token}`)
+      .send({ addressId })
 
     const orderId = checkoutResponse.body.order.id
 

@@ -1,13 +1,21 @@
 import request from 'supertest'
 import { app } from '@/app'
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { createAndAuthenticateUser } from '@/util/test/create-and-authenticate-user'
+import { prisma } from '@/config/prisma/database'
 
 describe('Create Order (e2e)', () => {
   beforeAll(async () => {
     await app.ready()
   })
-
+  beforeEach(async () => {
+    await prisma.orderItem.deleteMany()
+    await prisma.order.deleteMany()
+    await prisma.cart.deleteMany()
+    await prisma.address.deleteMany()
+    await prisma.product.deleteMany()
+    await prisma.user.deleteMany()
+  })
   afterAll(async () => {
     await app.close()
   })
@@ -27,6 +35,19 @@ describe('Create Order (e2e)', () => {
       })
     const productId = productResponse.body.product.id
 
+    const addressResponse = await request(app.server)
+      .post('/addresses')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        street: 'Rua dos Testes',
+        number: '123',
+        city: 'Cidade Teste',
+        state: 'SP',
+        zipcode: '12345678',
+        complement: 'Apto 1',
+      })
+    const addressId = addressResponse.body.address.id
+
     await request(app.server)
       .post('/cart')
       .set('Authorization', `Bearer ${token}`)
@@ -38,7 +59,9 @@ describe('Create Order (e2e)', () => {
     const orderResponse = await request(app.server)
       .post('/checkout')
       .set('Authorization', `Bearer ${token}`)
-      .send()
+      .send({
+        addressId,
+      })
     expect(orderResponse.statusCode).toBe(201)
     expect(orderResponse.body.order).toEqual(
       expect.objectContaining({
@@ -60,12 +83,27 @@ describe('Create Order (e2e)', () => {
   it('should not create order if cart is empty', async () => {
     const { token } = await createAndAuthenticateUser(app)
 
-    const response = await request(app.server)
-      .post('/orders')
+    const addressResponse = await request(app.server)
+      .post('/addresses')
       .set('Authorization', `Bearer ${token}`)
-      .send()
+      .send({
+        street: 'Rua dos Testes',
+        number: '123',
+        city: 'Cidade Teste',
+        state: 'SP',
+        zipcode: '12345678',
+        complement: 'Apto 1',
+      })
+    const addressId = addressResponse.body.address.id
 
-    expect(response.statusCode).toBe(404)
+    const response = await request(app.server)
+      .post('/checkout')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        addressId,
+      })
+
+    expect(response.statusCode).toBe(400)
     expect(response.body.message).toBeDefined()
   })
 })

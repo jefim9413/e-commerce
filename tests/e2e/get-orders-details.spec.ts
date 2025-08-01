@@ -46,6 +46,19 @@ describe('Get Order Details (e2e)', () => {
 
     const productId = await createProduct(admin.token)
 
+    const addressResponse = await request(app.server)
+      .post('/addresses')
+      .set('Authorization', `Bearer ${user.token}`)
+      .send({
+        street: 'Rua dos Testes',
+        number: '123',
+        city: 'Cidade Teste',
+        state: 'SP',
+        zipcode: '12345678',
+        complement: 'Apto 1',
+      })
+    const addressId = addressResponse.body.address.id
+
     await request(app.server)
       .post('/cart')
       .set('Authorization', `Bearer ${user.token}`)
@@ -54,6 +67,7 @@ describe('Get Order Details (e2e)', () => {
     const checkoutResponse = await request(app.server)
       .post('/checkout')
       .set('Authorization', `Bearer ${user.token}`)
+      .send({ addressId })
 
     const createdOrderId = checkoutResponse.body.order.id
 

@@ -18,6 +18,21 @@ async function createProduct(adminToken: string) {
   return response.body.product.id
 }
 
+async function createAddress(userToken: string) {
+  const response = await request(app.server)
+    .post('/addresses')
+    .set('Authorization', `Bearer ${userToken}`)
+    .send({
+      street: 'Rua dos Testes',
+      number: '123',
+      city: 'Cidade Teste',
+      state: 'SP',
+      zipcode: '12345678',
+      complement: 'Apto 1',
+    })
+  return response.body.address.id
+}
+
 describe('List User Orders (e2e)', () => {
   beforeAll(async () => {
     await app.ready()
@@ -26,6 +41,7 @@ describe('List User Orders (e2e)', () => {
     await prisma.orderItem.deleteMany()
     await prisma.order.deleteMany()
     await prisma.cart.deleteMany?.()
+    await prisma.address.deleteMany()
     await prisma.user.deleteMany()
   })
   afterAll(async () => {
@@ -51,6 +67,8 @@ describe('List User Orders (e2e)', () => {
       `userB-${Date.now()}@example.com`,
     )
 
+    const addressId = await createAddress(userAdmin.token)
+    const addressId_userA = await createAddress(userA.token)
     await request(app.server)
       .post('/cart')
       .set('Authorization', `Bearer ${userA.token}`)
@@ -58,8 +76,9 @@ describe('List User Orders (e2e)', () => {
     await request(app.server)
       .post('/checkout')
       .set('Authorization', `Bearer ${userA.token}`)
-      .send()
+      .send({ addressId: addressId_userA })
 
+    const addressId_userB = await createAddress(userB.token)
     await request(app.server)
       .post('/cart')
       .set('Authorization', `Bearer ${userB.token}`)
@@ -67,18 +86,15 @@ describe('List User Orders (e2e)', () => {
     await request(app.server)
       .post('/checkout')
       .set('Authorization', `Bearer ${userB.token}`)
-      .send()
+      .send({ addressId: addressId_userB })
 
     const ordersResponse = await request(app.server)
       .get('/orders')
       .set('Authorization', `Bearer ${userAdmin.token}`)
+      .send({ addressId })
 
     expect(ordersResponse.statusCode).toBe(200)
     expect(ordersResponse.body.orders.length).toBe(2)
-    // Extra: Validar userId se seu helper retornar userId
-    // const orderUserIds = ordersResponse.body.orders.map((order: any) => order.userId)
-    // expect(orderUserIds).toContain(userA.userId)
-    // expect(orderUserIds).toContain(userB.userId)
   })
 
   it('should list only orders for the authenticated user', async () => {
@@ -88,12 +104,14 @@ describe('List User Orders (e2e)', () => {
       'admin2@example.com',
     )
     const productId = await createProduct(userAdmin.token)
+
     const user = await createAndAuthenticateUser(
       app,
       false,
       `user-single-${Date.now()}@example.com`,
     )
 
+    const addressId = await createAddress(user.token)
     await request(app.server)
       .post('/cart')
       .set('Authorization', `Bearer ${user.token}`)
@@ -101,7 +119,7 @@ describe('List User Orders (e2e)', () => {
     await request(app.server)
       .post('/checkout')
       .set('Authorization', `Bearer ${user.token}`)
-      .send()
+      .send({ addressId })
 
     const ordersResponse = await request(app.server)
       .get('/orders')
