@@ -4,9 +4,12 @@ import { OrderRepository } from '@/core/repositories/order-repository'
 import { Decimal } from '@prisma/client/runtime/library'
 import { ProductNotFoundError } from '../errors/product-not-found-error'
 import { CartIsEmptyError } from '../errors/cart-is-empty-error'
+import { AddressRepository } from '@/core/repositories/address-repository'
+import { AddressNotFoundError } from '../errors/address-not-found-error'
 
 interface CreateOrderUseCaseRequest {
   userId: string
+  addressId: string
 }
 
 export class CreateOrderUseCase {
@@ -14,11 +17,15 @@ export class CreateOrderUseCase {
     private orderRepository: OrderRepository,
     private cartRepository: CartRepository,
     private productRepository: ProductsRepository,
+    private addressRepository: AddressRepository,
   ) {}
 
-  async execute({ userId }: CreateOrderUseCaseRequest) {
+  async execute({ userId, addressId }: CreateOrderUseCaseRequest) {
+    const address = await this.addressRepository.findById(addressId)
+    if (!address || address.userId !== userId) {
+      throw new AddressNotFoundError()
+    }
     const cartItems = await this.cartRepository.findManyByUser(userId)
-
     if (!cartItems.length) {
       throw new CartIsEmptyError()
     }
@@ -34,7 +41,7 @@ export class CreateOrderUseCase {
         return {
           productId: item.productId,
           quantity: item.quantity,
-          price: product.price.toNumber(),
+          price: product.price,
         }
       }),
     )
@@ -46,6 +53,7 @@ export class CreateOrderUseCase {
     const order = await this.orderRepository.create({
       userId,
       total: new Decimal(total),
+      addressId,
       items,
     })
     await this.cartRepository.clear(userId)
