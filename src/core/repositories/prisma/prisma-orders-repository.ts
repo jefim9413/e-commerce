@@ -3,10 +3,11 @@ import {
   OrderRepository,
   CreateOrderDTO,
 } from '@/core/repositories/order-repository'
-import { Order, OrderItem, OrderStatus } from '@prisma/client'
+import { Address, Order, OrderItem, OrderStatus } from '@prisma/client'
 
 export type OrderWithItems = Order & {
   items: OrderItem[]
+  address?: Address
 }
 
 export class PrismaOrdersRepository implements OrderRepository {
@@ -17,6 +18,7 @@ export class PrismaOrdersRepository implements OrderRepository {
       },
       include: {
         items: true,
+        Address: true,
       },
     })
     return order as OrderWithItems | null
@@ -29,6 +31,7 @@ export class PrismaOrdersRepository implements OrderRepository {
       },
       include: {
         items: true,
+        Address: true,
       },
     })
 
@@ -39,6 +42,7 @@ export class PrismaOrdersRepository implements OrderRepository {
     const orders = await prisma.order.findMany({
       include: {
         items: true,
+        Address: true,
       },
     })
 
@@ -49,6 +53,7 @@ export class PrismaOrdersRepository implements OrderRepository {
     const order = await prisma.order.create({
       data: {
         userId: data.userId,
+        addressId: data.addressId,
         total: data.total,
         items: {
           createMany: {
@@ -62,6 +67,7 @@ export class PrismaOrdersRepository implements OrderRepository {
       },
       include: {
         items: true,
+        Address: true,
       },
     })
     return order

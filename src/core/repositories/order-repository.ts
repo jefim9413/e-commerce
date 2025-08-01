@@ -1,4 +1,4 @@
-import { Order, OrderStatus } from '@prisma/client'
+import { Address, Order, OrderStatus } from '@prisma/client'
 import { Decimal } from '@prisma/client/runtime/library'
 
 export interface CreateOrderItemDTO {
@@ -10,10 +10,12 @@ export interface CreateOrderItemDTO {
 export interface CreateOrderDTO {
   userId: string
   total: Decimal
+  addressId: string
   items: CreateOrderItemDTO[]
 }
 export interface OrderWithItems extends Order {
   items: CreateOrderItemDTO[]
+  address?: Address
 }
 
 export interface OrderRepository {
