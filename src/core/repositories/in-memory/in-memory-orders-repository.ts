@@ -24,6 +24,7 @@ export class InMemoryOrderRepository implements OrderRepository {
       total: new Decimal(data.total),
       items: data.items,
       createdAt: new Date(),
+      addressId: data.addressId,
       status: OrderStatus.PENDING,
     }
 

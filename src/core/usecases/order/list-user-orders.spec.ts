@@ -16,6 +16,7 @@ describe('ListUserOrdersUseCase', () => {
     await orderRepository.create({
       userId: 'user-1',
       total: new Decimal(100),
+      addressId: 'address-1',
       items: [
         {
           productId: 'prod-1',
@@ -28,6 +29,7 @@ describe('ListUserOrdersUseCase', () => {
     await orderRepository.create({
       userId: 'user-1',
       total: new Decimal(200),
+      addressId: 'address-1',
       items: [
         {
           productId: 'prod-2',
@@ -40,6 +42,7 @@ describe('ListUserOrdersUseCase', () => {
     await orderRepository.create({
       userId: 'user-2',
       total: new Decimal(150),
+      addressId: 'address-2',
       items: [
         {
           productId: 'prod-3',
@@ -59,6 +62,7 @@ describe('ListUserOrdersUseCase', () => {
     await orderRepository.create({
       userId: 'user-1',
       total: new Decimal(100),
+      addressId: 'address-1',
       items: [
         {
           productId: 'prod-1',
@@ -71,6 +75,7 @@ describe('ListUserOrdersUseCase', () => {
     await orderRepository.create({
       userId: 'user-2',
       total: new Decimal(200),
+      addressId: 'address-2',
       items: [
         {
           productId: 'prod-2',

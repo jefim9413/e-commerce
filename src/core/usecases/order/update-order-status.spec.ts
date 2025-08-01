@@ -18,6 +18,7 @@ describe('UpdateOrderStatusUseCase', () => {
     const createdOrder = await orderRepository.create({
       userId: 'user-1',
       total: new Decimal(300),
+      addressId: 'address-1',
       items: [{ productId: 'prod-1', quantity: 2, price: new Decimal(150) }],
     })
 
