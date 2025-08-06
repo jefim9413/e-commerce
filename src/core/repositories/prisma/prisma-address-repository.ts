@@ -14,4 +14,12 @@ export class PrismaAddressRepository implements AddressRepository {
   async findById(id: string): Promise<Address | null> {
     return prisma.address.findUnique({ where: { id } })
   }
+
+  async update(id: string, data: Prisma.AddressUpdateInput): Promise<Address> {
+    return prisma.address.update({ where: { id }, data })
+  }
+
+  async remove(id: string): Promise<void> {
+    await prisma.address.delete({ where: { id } })
+  }
 }
