@@ -1,0 +1,107 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+model User {
+  id        String    @id @default(uuid())
+  name      String
+  email     String    @unique
+  role      Role      @default(MEMBER)
+  password  String
+  createdAt DateTime  @default(now())
+  Cart      Cart[]
+  Order     Order[]
+  Address   Address[]
+
+  @@map("user")
+}
+
+model Product {
+  id          String      @id @default(uuid())
+  name        String
+  description String
+  price       Decimal     @db.Decimal(10, 2)
+  stock       Int
+  imageUrl    String?
+  createdAt   DateTime    @default(now())
+  Cart        Cart[]
+  OrderItem   OrderItem[]
+
+  @@map("product")
+}
+
+model Cart {
+  id        String   @id @default(uuid())
+  userId    String
+  productId String
+  quantity  Int
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+
+  @@unique([userId, productId])
+  @@map("cart")
+}
+
+model Address {
+  id         String   @id @default(uuid())
+  userId     String
+  street     String
+  number     String
+  city       String
+  state      String
+  zipcode    String
+  complement String?
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
+
+  orders Order[]
+
+  @@map("address")
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  DELIVERED
+  CANCELLED
+}
+
+model Order {
+  id        String      @id @default(uuid())
+  userId    String
+  total     Decimal     @db.Decimal(10, 2)
+  status    OrderStatus @default(PENDING)
+  createdAt DateTime    @default(now())
+
+  user      User        @relation(fields: [userId], references: [id])
+  items     OrderItem[]
+  Address   Address?    @relation(fields: [addressId], references: [id])
+  addressId String?
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id        String  @id @default(uuid())
+  orderId   String
+  productId String
+  quantity  Int
+  price     Decimal @db.Decimal(10, 2)
+
+  order   Order   @relation(fields: [orderId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+
+  @@map("order_items")
+}
